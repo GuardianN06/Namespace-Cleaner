@@ -40,11 +40,13 @@ namespace NamespaceCleaner
 
             string outputPath = $"{assemblyPath}.cleaned.exe";
 
-            var ass = AssemblyDef.Load(assemblyPath);
-            var options = new ModuleWriterOptions(ass.Modules[0]);
-            options.MetadataOptions.Flags |= MetadataFlags.KeepOldMaxStack;
+            var writerOptions = new ModuleWriterOptions(module)
+            {
+                Logger = DummyLogger.NoThrowInstance,
+                MetadataOptions = { Flags = MetadataFlags.PreserveAll }
+            };
 
-            module.Write(outputPath, options);
+            module.Write(outputPath, writerOptions);
             Console.WriteLine($"Cleaned assembly saved as {outputPath}");
         }
     }
